@@ -7,6 +7,7 @@ class TotalWidget extends StatelessWidget {
     required this.title,
     required this.value,
     this.isPositive = true,
+    MaterialColor? textColor,
   }) : super(key: key);
 
   final String title;

@@ -31,11 +31,11 @@ class Header extends StatelessWidget {
 
   void _showToast(BuildContext context) {
     Fluttertoast.showToast(
-      msg: "This is your reminder message.",
-      toastLength: Toast.LENGTH_SHORT,
+      msg: "Alert: Sensor needs attention.",
+      toastLength: Toast.LENGTH_LONG,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.red,
       textColor: Colors.white,
       fontSize: 16.0,
     );
@@ -103,51 +103,19 @@ class Header extends StatelessWidget {
               SizedBox(
                 width: context.width * 0.01,
               ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // const CircleAvatar(
-                  //   radius: 20.0,
-                  //   backgroundImage: NetworkImage(
-                  //     'https://media.licdn.com/dms/image/D4E03AQHirihVTwk9sA/profile-displayphoto-shrink_800_800/0/1678926297499?e=2147483647&v=beta&t=AXEpUxgTP1zcc3eP1U4jN6oiu9N9yzL1hHj83WZjZtU',
-                  //   ),
-                  // ),
-                  SizedBox(
-                    width: context.width * 0.007,
+              GestureDetector(
+                onTap: () => _showToast(context),
+                child: Container(
+                  padding: EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.red,
                   ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // const Text(
-                          //   'Hnay Sameh Elshafey',
-                          //   style: TextStyle(
-                          //     color: Colors.white,
-                          //     fontWeight: FontWeight.w600,
-                          //   ),
-                          // ),
-                          SizedBox(
-                            width: context.width * 0.005,
-                          ),
-                          // const Icon(
-                          //   Icons.keyboard_arrow_down_outlined,
-                          //   size: 12.0,
-                          // ),
-                        ],
-                      ),
-                      // Text(
-                      //   'han798348@gmail.com',
-                      //   style: TextStyle(
-                      //     color: Colors.grey[300],
-                      //     fontSize: 10.0,
-                      //   ),
-                      // ),
-                    ],
+                  child: const Icon(
+                    Icons.warning,
+                    color: Colors.white,
                   ),
-                ],
+                ),
               ),
             ],
           ),

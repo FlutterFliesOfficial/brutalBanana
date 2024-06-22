@@ -14,14 +14,14 @@ class OverviewStatistic extends StatefulWidget {
 }
 
 class _OverviewStatisticState extends State<OverviewStatistic> {
-  final List<String> _times = ['1D', '1W', '1M', '1Y', 'MAX'];
+  // final List<String> _times = ['1D', '1W', '1M', '1Y', 'MAX'];
   String? _selectedTime;
 
-  @override
-  void initState() {
-    super.initState();
-    _selectedTime = _times[1]; // Set the initial selected time interval to '1M'
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _selectedTime = _times[1]; // Set the initial selected time interval to '1M'
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -70,15 +70,17 @@ class _OverviewStatisticState extends State<OverviewStatistic> {
             ],
           ),
           SizedBox(height: context.height * 0.025),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _companyInfo(context),
-              const Spacer(),
-              _timeFilter(context),
-            ],
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     _companyInfo(context),
+          //     const Spacer(),
+          //     _timeFilter(context),
+          //   ],
+          // ),s
+          const LineChartWidget(
+            selectedTime: '',
           ),
-          const LineChartWidget(),
         ],
       ),
     );
@@ -153,25 +155,25 @@ class _OverviewStatisticState extends State<OverviewStatistic> {
     );
   }
 
-  Container _timeFilter(BuildContext context) {
-    return Container(
-      width: context.width * 0.3,
-      height: context.height * 0.09,
-      padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: darkBlack,
-        borderRadius: BorderRadius.circular(14.0),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: _times
-            .map(
-              (e) => _lastTimeWidget(context, _times.indexOf(e), e),
-            )
-            .toList(),
-      ),
-    );
-  }
+  // Container _timeFilter(BuildContext context) {
+  // return Container(
+  //   width: context.width * 0.3,
+  //   height: context.height * 0.09,
+  //   padding: const EdgeInsets.all(10.0),
+  //   decoration: BoxDecoration(
+  //     color: darkBlack,
+  //     borderRadius: BorderRadius.circular(14.0),
+  //   ),
+  //   // child: Row(
+  //   //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //   //   children: _times
+  //   //       .map(
+  //   //         (e) => _lastTimeWidget(context, _times.indexOf(e), e),
+  //   //       )
+  //   //       .toList(),
+  //   // ),
+  // );
+  // }
 
   GestureDetector _lastTimeWidget(
       BuildContext context, int index, String time) {

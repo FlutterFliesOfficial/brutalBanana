@@ -3,11 +3,11 @@ import 'dart:ui';
 import 'package:dashboard_template_dribbble/utils/media_query_values.dart';
 import 'package:dashboard_template_dribbble/view/screens/report_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 import '../../utils/colors.dart';
 import 'custom_button.dart';
 import 'outline_button.dart';
-import 'pie_chart.dart';
 
 class EquipmentWidget extends StatelessWidget {
   const EquipmentWidget({
@@ -33,7 +33,7 @@ class EquipmentWidget extends StatelessWidget {
             'Equipment Health and RUL',
             style: Theme.of(context)
                 .textTheme
-                .headline6!
+                .titleLarge!
                 .copyWith(color: Colors.white),
           ),
           SizedBox(
@@ -111,79 +111,108 @@ class EquipmentWidget extends StatelessWidget {
           Stack(
             alignment: Alignment.center,
             children: [
-              const PieChartWidget(),
-              Container(
-                width: context.width * 0.235,
-                height: context.height * 0.235,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    width: 1.0,
-                    color: darkGrey.withOpacity(0.35),
+              SfRadialGauge(
+                axes: <RadialAxis>[
+                  RadialAxis(
+                    minimum: 0,
+                    maximum: 150,
+                    showLabels: false,
+                    showTicks: false,
+                    axisLineStyle: AxisLineStyle(
+                      thickness: 0.2,
+                      cornerStyle: CornerStyle.bothCurve,
+                      color: darkGrey.withOpacity(0.35),
+                      thicknessUnit: GaugeSizeUnit.factor,
+                    ),
+                    pointers: <GaugePointer>[
+                      RangePointer(
+                        value: 120,
+                        cornerStyle: CornerStyle.bothCurve,
+                        width: 0.2,
+                        sizeUnit: GaugeSizeUnit.factor,
+                        color: secondPrimaryColor,
+                      ),
+                      NeedlePointer(
+                        value: 120,
+                        needleColor: primaryColor,
+                        needleEndWidth: 5,
+                        knobStyle: KnobStyle(
+                          color: primaryColor,
+                          borderColor: darkGrey,
+                          borderWidth: 0.05,
+                        ),
+                      ),
+                    ],
+                    annotations: <GaugeAnnotation>[
+                      GaugeAnnotation(
+                        widget: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Remaining Useful Life',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(color: darkGrey),
+                            ),
+                            SizedBox(
+                              height: context.height * 0.02,
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '120',
+                                  style: TextStyle(
+                                    fontSize: 25.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: context.width * 0.001,
+                                ),
+                                Text(
+                                  'days',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                          color: darkGrey, fontSize: 15.0),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: context.height * 0.02,
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const CircleAvatar(
+                                  backgroundColor: blue,
+                                  radius: 3.0,
+                                ),
+                                SizedBox(
+                                  width: context.width * 0.004,
+                                ),
+                                Text(
+                                  'Optimal Performance',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: darkGrey),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        positionFactor: 0.1,
+                      ),
+                    ],
                   ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Remaining Useful Life',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color: darkGrey),
-                    ),
-                    SizedBox(
-                      height: context.height * 0.02,
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          '120',
-                          style: TextStyle(
-                            fontSize: 25.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          width: context.width * 0.001,
-                        ),
-                        Text(
-                          'days',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: darkGrey, fontSize: 15.0),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: context.height * 0.02,
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const CircleAvatar(
-                          backgroundColor: blue,
-                          radius: 3.0,
-                        ),
-                        SizedBox(
-                          width: context.width * 0.004,
-                        ),
-                        Text(
-                          'Optimal Performance',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(color: darkGrey),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                ],
               ),
             ],
           ),
@@ -202,9 +231,8 @@ class EquipmentWidget extends StatelessWidget {
           ),
           CustomButton(
             width: context.width * 0.15,
-            title: 'Vw Detailed Report',
+            title: 'View Detailed Report',
             onPressed: () {
-              print("object");
               try {
                 Navigator.push(
                   context,

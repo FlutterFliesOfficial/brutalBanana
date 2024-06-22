@@ -8,17 +8,18 @@ class CustomButton extends StatelessWidget {
     required this.width,
     required this.title,
     this.isIconButton = true,
-    required Function() onPressed,
+    required this.onPressed, // Properly define onPressed
   });
 
   final double width;
   final String title;
   final bool isIconButton;
+  final Function() onPressed; // Declare the onPressed variable
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onPressed, // Use the onPressed function here
       child: Container(
         width: width,
         height: context.height * 0.05,

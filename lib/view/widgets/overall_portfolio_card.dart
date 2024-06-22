@@ -1,22 +1,67 @@
-// ignore_for_file: non_constant_identifier_names
+import 'dart:async';
+import 'dart:math';
 
-// ignore: unused_import
-import 'package:dashboard_template_dribbble/view/screens/details_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../utils/colors.dart';
 import '../../utils/media_query_values.dart';
-import 'package:flutter/material.dart';
-
 import 'custom_button.dart';
 import 'total_widget.dart';
 
-class OverallPortfolioCard extends StatelessWidget {
-  const OverallPortfolioCard({
-    Key? key,
-  }) : super(key: key);
+class OverallPortfolioCard extends StatefulWidget {
+  const OverallPortfolioCard({Key? key}) : super(key: key);
+
+  @override
+  _OverallPortfolioCardState createState() => _OverallPortfolioCardState();
+}
+
+class _OverallPortfolioCardState extends State<OverallPortfolioCard> {
+  late Timer _timer;
+  late double _randomValue;
+  late bool _isAlert;
+
+  @override
+  void initState() {
+    super.initState();
+    _randomValue = 0.0;
+    _isAlert = false;
+    _startRandomValueUpdate();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startRandomValueUpdate() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _randomValue = Random().nextDouble() * 100;
+        _isAlert = _randomValue < 20; // Check if value goes below 20
+      });
+    });
+  }
+
+  void _showAlertToast() {
+    if (_isAlert) {
+      Fluttertoast.showToast(
+        msg: "Alert: Random value exceeded 15!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    _showAlertToast(); // Call _showAlertToast() to display alert message
+
     return Container(
       transform: Matrix4.translationValues(0, -90, 0),
       width: context.width * 0.65,
@@ -47,30 +92,31 @@ class OverallPortfolioCard extends StatelessWidget {
                 isIconButton: true,
                 onPressed: () {
                   debugPrint('hello');
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailsScreen(),
-                      ));
+                  // Navigate to details screen
                 },
               ),
             ],
           ),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              //  TotalWidget(),
               TotalWidget(
                 title: 'Remaining useful life',
-                value: '',
+                value: _randomValue.toStringAsFixed(2),
+                textColor:
+                    _isAlert ? Colors.red : null, // Set color to red if alert
               ),
               TotalWidget(
                 title: 'Health Score',
-                value: '',
+                value: _randomValue.toStringAsFixed(2),
+                textColor:
+                    _isAlert ? Colors.red : null, // Set color to red if alert
               ),
               TotalWidget(
                 title: 'Recommendations',
-                value: 'No',
+                value: _randomValue < 20
+                    ? 'Yes'
+                    : 'No', // Show 'Yes' if value is less than 20
               ),
             ],
           ),
@@ -78,6 +124,4 @@ class OverallPortfolioCard extends StatelessWidget {
       ),
     );
   }
-
-  DetailsScreen() {}
 }

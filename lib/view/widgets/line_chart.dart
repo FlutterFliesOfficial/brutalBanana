@@ -4,7 +4,11 @@ import 'package:fl_chart/fl_chart.dart';
 import '../../utils/colors.dart';
 
 class LineChartWidget extends StatefulWidget {
-  const LineChartWidget({super.key});
+  final Function(String)? onTimePeriodChanged;
+
+  const LineChartWidget(
+      {Key? key, this.onTimePeriodChanged, required String selectedTime})
+      : super(key: key);
 
   @override
   State<LineChartWidget> createState() => _LineChartWidgetState();
@@ -22,24 +26,16 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   // Data for different time periods
   final Map<String, List<FlSpot>> _chartData = {
-    '1D': [FlSpot(0, 1), FlSpot(1, 2), FlSpot(2, 1.5)],
-    '1W': [FlSpot(0, 2), FlSpot(1, 1.5), FlSpot(2, 2.5)],
-    '1M': [
-      FlSpot(0, 3),
-      FlSpot(2.6, 2),
-      FlSpot(4.9, 5),
-      FlSpot(6.8, 3.1),
-      FlSpot(8, 4),
-      FlSpot(9.5, 3),
-      FlSpot(11, 4)
-    ],
-    '1Y': [
-      FlSpot(0, 2),
-      FlSpot(3, 1.8),
-      FlSpot(6, 2.2),
-      FlSpot(9, 2.5),
-      FlSpot(12, 2)
-    ],
+    '1D': List.generate(
+        24, (index) => FlSpot(index.toDouble(), (index % 2) + 1.5)),
+    '1W': List.generate(
+        7, (index) => FlSpot(index.toDouble(), (index % 3) + 1.5)),
+    '1M': List.generate(
+        30,
+        (index) =>
+            FlSpot(index.toDouble(), (index % 4) + 2.0)), // 30 days in a month
+    '1Y': List.generate(
+        12, (index) => FlSpot(index.toDouble(), (index % 5) + 1.5)),
   };
 
   // Selected time period
@@ -56,19 +52,9 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
     return Column(
       children: [
-        DropdownButton<String>(
-          value: _selectedTime,
-          items: _chartData.keys.map((String key) {
-            return DropdownMenuItem<String>(
-              value: key,
-              child: Text(key),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            setState(() {
-              _selectedTime = newValue!;
-            });
-          },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: _buildTimeFilterButtons(),
         ),
         Stack(
           children: <Widget>[
@@ -113,21 +99,64 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     );
   }
 
+  List<Widget> _buildTimeFilterButtons() {
+    return _chartData.keys.map((String key) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _selectedTime = key;
+            });
+            if (widget.onTimePeriodChanged != null) {
+              widget.onTimePeriodChanged!(_selectedTime);
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _selectedTime == key ? primaryColor : lightBlack,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+          ),
+          child: Text(key),
+        ),
+      );
+    }).toList();
+  }
+
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 14,
     );
     Widget text;
-    switch (value.toInt()) {
-      case 2:
-        text = const Text('MAR', style: style);
+    switch (_selectedTime) {
+      case '1D':
+        text = Text('${value.toInt()}h', style: style);
         break;
-      case 5:
-        text = const Text('JUN', style: style);
+      case '1W':
+        const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        text = Text(daysOfWeek[value.toInt()], style: style);
         break;
-      case 8:
-        text = const Text('SEP', style: style);
+      case '1M':
+        text = Text('${value.toInt() + 1}', style: style);
+        break;
+      case '1Y':
+        const months = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec'
+        ];
+        text = Text(months[value.toInt()], style: style);
         break;
       default:
         text = const Text('', style: style);
