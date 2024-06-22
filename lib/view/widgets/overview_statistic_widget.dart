@@ -78,7 +78,7 @@ class _OverviewStatisticState extends State<OverviewStatistic> {
           //     _timeFilter(context),
           //   ],
           // ),s
-          const LineChartWidget(
+          LineChartWidget(
             selectedTime: '',
           ),
         ],

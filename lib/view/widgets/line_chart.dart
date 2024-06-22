@@ -1,14 +1,18 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 
 import '../../utils/colors.dart';
 
 class LineChartWidget extends StatefulWidget {
   final Function(String)? onTimePeriodChanged;
+  String selectedTime = '1W';
 
-  const LineChartWidget(
-      {Key? key, this.onTimePeriodChanged, required String selectedTime})
-      : super(key: key);
+  LineChartWidget({
+    Key? key,
+    this.onTimePeriodChanged,
+    required this.selectedTime,
+  }) : super(key: key);
 
   @override
   State<LineChartWidget> createState() => _LineChartWidgetState();
@@ -24,96 +28,131 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   bool showAvg = false;
 
-  // Data for different time periods
-  final Map<String, List<FlSpot>> _chartData = {
-    '1D': List.generate(
-        24, (index) => FlSpot(index.toDouble(), (index % 2) + 1.5)),
-    '1W': List.generate(
-        7, (index) => FlSpot(index.toDouble(), (index % 3) + 1.5)),
-    '1M': List.generate(
-        30,
-        (index) =>
-            FlSpot(index.toDouble(), (index % 4) + 2.0)), // 30 days in a month
-    '1Y': List.generate(
-        12, (index) => FlSpot(index.toDouble(), (index % 5) + 1.5)),
-  };
+  Future<List<FlSpot>> fetchDataAndConvertToFlSpot() async {
+    QuerySnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('dataLog').get();
 
-  // Selected time period
-  String _selectedTime = '1M';
+    List<FlSpot> flSpots = [];
+
+    snapshot.docs.forEach((doc) {
+      double xValue = doc['time'];
+      double yValue = doc['rot'];
+
+      FlSpot flSpot = FlSpot(xValue, yValue);
+
+      flSpots.add(flSpot);
+    });
+
+    return flSpots;
+  }
+
+  Map<String, List<FlSpot>> generateChartData(List<FlSpot> flspot_list) {
+    Map<String, List<FlSpot>> chartData = {
+      '1D': [],
+      '1W': [],
+      '1M': [],
+      '1Y': [],
+    };
+
+    chartData['1D'] = flspot_list.take(24).toList();
+    chartData['1W'] = flspot_list.take(3).toList();
+    chartData['1M'] = flspot_list.take(30).toList();
+    chartData['1Y'] = flspot_list.take(12).toList();
+
+    return chartData;
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<FlSpot> currentData = _chartData[_selectedTime]!;
+    return FutureBuilder<List<FlSpot>>(
+      future: fetchDataAndConvertToFlSpot(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No data available'));
+        } else {
+          List<FlSpot> flSpots = snapshot.data!;
+          Map<String, List<FlSpot>> _chartData = generateChartData(flSpots);
+          var selectedTime = '1M';
+          List<FlSpot> currentData = _chartData[selectedTime]!;
 
-    double maxX =
-        currentData.map((spot) => spot.x).reduce((a, b) => a > b ? a : b);
-    double maxY =
-        currentData.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+          double maxX =
+              currentData.map((spot) => spot.x).reduce((a, b) => a > b ? a : b);
+          double maxY =
+              currentData.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: _buildTimeFilterButtons(),
-        ),
-        Stack(
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio: 2.0,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  right: 18,
-                  left: 12,
-                  top: 24,
-                  bottom: 12,
-                ),
-                child: LineChart(
-                  showAvg
-                      ? avgData(maxX, maxY)
-                      : mainData(currentData, maxX, maxY),
-                ),
+          return Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: _buildTimeFilterButtons(_chartData),
               ),
-            ),
-            SizedBox(
-              width: 60,
-              height: 34,
-              child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    showAvg = !showAvg;
-                  });
-                },
-                child: Text(
-                  'avg',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color:
-                        showAvg ? Colors.white.withOpacity(0.5) : Colors.white,
+              Stack(
+                children: <Widget>[
+                  AspectRatio(
+                    aspectRatio: 2.0,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        right: 18,
+                        left: 12,
+                        top: 24,
+                        bottom: 12,
+                      ),
+                      child: LineChart(
+                        showAvg
+                            ? avgData(maxX, maxY)
+                            : mainData(currentData, maxX, maxY),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    width: 60,
+                    height: 34,
+                    child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          showAvg = !showAvg;
+                        });
+                      },
+                      child: Text(
+                        'avg',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: showAvg
+                              ? Colors.white.withOpacity(0.5)
+                              : Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          );
+        }
+      },
     );
   }
 
-  List<Widget> _buildTimeFilterButtons() {
-    return _chartData.keys.map((String key) {
+  List<Widget> _buildTimeFilterButtons(Map<String, List<FlSpot>> chartData) {
+    return chartData.keys.map((String key) {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
         child: ElevatedButton(
           onPressed: () {
             setState(() {
-              _selectedTime = key;
+              widget.selectedTime = key;
             });
             if (widget.onTimePeriodChanged != null) {
-              widget.onTimePeriodChanged!(_selectedTime);
+              widget.onTimePeriodChanged!(widget.selectedTime);
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: _selectedTime == key ? primaryColor : lightBlack,
+            backgroundColor:
+                widget.selectedTime == key ? primaryColor : lightBlack,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
             ),
@@ -130,7 +169,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
       fontSize: 14,
     );
     Widget text;
-    switch (_selectedTime) {
+    switch (widget.selectedTime) {
       case '1D':
         text = Text('${value.toInt()}h', style: style);
         break;
