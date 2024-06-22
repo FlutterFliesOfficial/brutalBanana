@@ -180,7 +180,7 @@ class _SideBarState extends State<SideBar> {
       case 'admin':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const AdminPage()),
+          MaterialPageRoute(builder: (context) => AdminPage()),
         );
         break;
       case 'add':

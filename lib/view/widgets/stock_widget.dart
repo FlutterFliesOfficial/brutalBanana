@@ -202,13 +202,17 @@ class EquipmentWidget extends StatelessWidget {
           ),
           CustomButton(
             width: context.width * 0.15,
-            title: 'View Detailed Report',
+            title: 'Vw Detailed Report',
             onPressed: () {
-              // Navigate to detailed report page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ReportPage()),
-              );
+              print("object");
+              try {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReportPage()),
+                );
+              } catch (e) {
+                print('Error navigating to ReportPage: $e');
+              }
             },
           ),
         ],
