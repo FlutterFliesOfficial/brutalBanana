@@ -1,12 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:dashboard_template_dribbble/view/screens/admin_screen.dart';
 import 'package:dashboard_template_dribbble/view/screens/feedbac_screen.dart';
 import 'package:dashboard_template_dribbble/view/screens/profile_screen.dart';
-import 'package:flutter/material.dart';
-
 import '../../utils/colors.dart';
 import '../../utils/media_query_values.dart';
-
-// Import other pages here
 
 class SideBar extends StatefulWidget {
   const SideBar({
@@ -19,9 +16,6 @@ class SideBar extends StatefulWidget {
 
 class _SideBarState extends State<SideBar> {
   final List<IconData> _icons = [
-    // Icons.data_exploration_rounded,
-    // Icons.messenger,
-    // Icons.pie_chart_rounded,
     Icons.account_balance_wallet,
     Icons.message,
     Icons.person,
@@ -55,7 +49,7 @@ class _SideBarState extends State<SideBar> {
                   (entry) => _customIcon(
                     entry.value,
                     entry.key,
-                    _navigateToPage(entry.key, context),
+                    () => _navigateToPage(entry.key, context),
                   ),
                 )
                 .toList(),
@@ -82,7 +76,7 @@ class _SideBarState extends State<SideBar> {
               height: context.height * 0.015,
             ),
             GestureDetector(
-              onTap: () => _navigateToPage(3, context),
+              onTap: () => _navigateToAdditionalPage('wallet', context),
               child: Container(
                 width: context.width * 0.03,
                 height: context.height * 0.06,
@@ -101,7 +95,7 @@ class _SideBarState extends State<SideBar> {
               height: context.height * 0.015,
             ),
             GestureDetector(
-              onTap: () => AdminPage(),
+              onTap: () => _navigateToAdditionalPage('admin', context),
               child: Container(
                 width: context.width * 0.03,
                 height: context.height * 0.06,
@@ -120,7 +114,7 @@ class _SideBarState extends State<SideBar> {
               height: context.height * 0.015,
             ),
             GestureDetector(
-              onTap: () => _navigateToPage(4, context),
+              onTap: () => _navigateToAdditionalPage('add', context),
               child: Container(
                 width: context.width * 0.03,
                 height: context.height * 0.06,
@@ -137,12 +131,12 @@ class _SideBarState extends State<SideBar> {
             ),
             const Spacer(),
             GestureDetector(
-              onTap: () => _navigateToPage(6, context),
+              onTap: () => _navigateToAdditionalPage('logout', context),
               child: Container(
                 width: context.width * 0.03,
                 height: context.height * 0.06,
                 decoration: BoxDecoration(
-                  color: lightBlack,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12.0),
                 ),
                 child: Icon(
@@ -158,45 +152,44 @@ class _SideBarState extends State<SideBar> {
     );
   }
 
-  VoidCallback _navigateToPage(int index, BuildContext context) {
-    return () {
-      switch (index) {
-        case 0:
-          // Navigator.push(
-          //   context,
-          //   // MaterialPageRoute(builder: (context) => DataExplorationPage()),
-          // );
-          break;
-        case 1:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => FeedbackScreen()),
-          );
-          break;
-        case 2:
-          // Navigator.push to PieChartPage
-          break;
-        case 3:
-          // Navigator.push to WalletPage
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProfileScreen()),
-          );
-          break;
-        case 4:
-          // Navigator.push to MessagePage
-          break;
-        case 5:
-          // Navigator.push to PersonPage
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AdminPage()),
-          );
+  void _navigateToPage(int index, BuildContext context) {
+    switch (index) {
+      case 0:
+        // Navigator.push to DataExplorationPage
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => FeedbackScreen()),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileScreen()),
+        );
+        break;
+    }
+  }
 
-          break;
-        // Add more cases for additional pages
-      }
-    };
+  void _navigateToAdditionalPage(String page, BuildContext context) {
+    switch (page) {
+      case 'wallet':
+        // Navigator.push to WalletPage
+        break;
+      case 'admin':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AdminPage()),
+        );
+        break;
+      case 'add':
+        // Navigator.push to AddPage
+        break;
+      case 'logout':
+        // Handle logout
+        break;
+    }
   }
 
   Padding _customIcon(IconData icon, int index, VoidCallback onTap) {

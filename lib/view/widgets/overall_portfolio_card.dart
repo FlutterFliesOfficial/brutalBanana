@@ -1,3 +1,6 @@
+// ignore_for_file: non_constant_identifier_names
+
+// ignore: unused_import
 import 'package:dashboard_template_dribbble/view/screens/details_screen.dart';
 
 import '../../utils/colors.dart';
@@ -53,32 +56,21 @@ class OverallPortfolioCard extends StatelessWidget {
               ),
             ],
           ),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: TotalWidget(
-                  title: 'Equipment Health Score',
-                  value: '85%',
-                ),
+              //  TotalWidget(),
+              TotalWidget(
+                title: 'Remaining useful life',
+                value: '',
               ),
-              Expanded(
-                child: TotalWidget(
-                  title: 'Remaining Useful Life',
-                  value: '2 years',
-                ),
+              TotalWidget(
+                title: 'Health Score',
+                value: '',
               ),
-              Expanded(
-                child: TotalWidget(
-                  title: '', // Empty string to hide this widget
-                  value: '',
-                ),
-              ),
-              Expanded(
-                child: TotalWidget(
-                  title: 'Maintenance Due',
-                  value: 'No',
-                ),
+              TotalWidget(
+                title: 'Recommendations',
+                value: 'No',
               ),
             ],
           ),
@@ -86,4 +78,6 @@ class OverallPortfolioCard extends StatelessWidget {
       ),
     );
   }
+
+  DetailsScreen() {}
 }

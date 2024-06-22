@@ -42,7 +42,7 @@ class _OverviewStatisticState extends State<OverviewStatistic> {
           Row(
             children: [
               const Text(
-                'Overview Statistic',
+                'Overview ',
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.w600,
@@ -106,13 +106,13 @@ class _OverviewStatisticState extends State<OverviewStatistic> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Origin Game EA Inc. (OREA)',
-              style: TextStyle(
-                color: darkGrey,
-                fontSize: 12.0,
-              ),
-            ),
+            // const Text(
+            //   'Origin Game EA Inc. (OREA)',
+            //   style: TextStyle(
+            //     color: darkGrey,
+            //     fontSize: 12.0,
+            //   ),
+            // ),
             SizedBox(height: context.height * 0.01),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -148,13 +148,7 @@ class _OverviewStatisticState extends State<OverviewStatistic> {
           size: 15.0,
         ),
         SizedBox(width: context.width * 0.001),
-        Text(
-          '+24%',
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall!
-              .copyWith(color: Colors.green),
-        ),
+        //
       ],
     );
   }

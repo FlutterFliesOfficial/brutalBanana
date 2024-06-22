@@ -69,7 +69,7 @@ class Header extends StatelessWidget {
                 width: context.width * 0.01,
               ),
               Text(
-                'Sun, 4 June 2023',
+                'Sat, 22 June 2023',
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
@@ -106,12 +106,12 @@ class Header extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const CircleAvatar(
-                    radius: 20.0,
-                    backgroundImage: NetworkImage(
-                      'https://media.licdn.com/dms/image/D4E03AQHirihVTwk9sA/profile-displayphoto-shrink_800_800/0/1678926297499?e=2147483647&v=beta&t=AXEpUxgTP1zcc3eP1U4jN6oiu9N9yzL1hHj83WZjZtU',
-                    ),
-                  ),
+                  // const CircleAvatar(
+                  //   radius: 20.0,
+                  //   backgroundImage: NetworkImage(
+                  //     'https://media.licdn.com/dms/image/D4E03AQHirihVTwk9sA/profile-displayphoto-shrink_800_800/0/1678926297499?e=2147483647&v=beta&t=AXEpUxgTP1zcc3eP1U4jN6oiu9N9yzL1hHj83WZjZtU',
+                  //   ),
+                  // ),
                   SizedBox(
                     width: context.width * 0.007,
                   ),
@@ -122,29 +122,29 @@ class Header extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text(
-                            'Hnay Sameh Elshafey',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          // const Text(
+                          //   'Hnay Sameh Elshafey',
+                          //   style: TextStyle(
+                          //     color: Colors.white,
+                          //     fontWeight: FontWeight.w600,
+                          //   ),
+                          // ),
                           SizedBox(
                             width: context.width * 0.005,
                           ),
-                          const Icon(
-                            Icons.keyboard_arrow_down_outlined,
-                            size: 12.0,
-                          ),
+                          // const Icon(
+                          //   Icons.keyboard_arrow_down_outlined,
+                          //   size: 12.0,
+                          // ),
                         ],
                       ),
-                      Text(
-                        'han798348@gmail.com',
-                        style: TextStyle(
-                          color: Colors.grey[300],
-                          fontSize: 10.0,
-                        ),
-                      ),
+                      // Text(
+                      //   'han798348@gmail.com',
+                      //   style: TextStyle(
+                      //     color: Colors.grey[300],
+                      //     fontSize: 10.0,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],

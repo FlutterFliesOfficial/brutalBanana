@@ -20,41 +20,94 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
   bool showAvg = false;
 
+  // Data for different time periods
+  final Map<String, List<FlSpot>> _chartData = {
+    '1D': [FlSpot(0, 1), FlSpot(1, 2), FlSpot(2, 1.5)],
+    '1W': [FlSpot(0, 2), FlSpot(1, 1.5), FlSpot(2, 2.5)],
+    '1M': [
+      FlSpot(0, 3),
+      FlSpot(2.6, 2),
+      FlSpot(4.9, 5),
+      FlSpot(6.8, 3.1),
+      FlSpot(8, 4),
+      FlSpot(9.5, 3),
+      FlSpot(11, 4)
+    ],
+    '1Y': [
+      FlSpot(0, 2),
+      FlSpot(3, 1.8),
+      FlSpot(6, 2.2),
+      FlSpot(9, 2.5),
+      FlSpot(12, 2)
+    ],
+  };
+
+  // Selected time period
+  String _selectedTime = '1M';
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        AspectRatio(
-          aspectRatio: 2.0,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              right: 18,
-              left: 12,
-              top: 24,
-              bottom: 12,
-            ),
-            child: LineChart(
-              showAvg ? avgData() : mainData(),
-            ),
-          ),
+    List<FlSpot> currentData = _chartData[_selectedTime]!;
+
+    double maxX =
+        currentData.map((spot) => spot.x).reduce((a, b) => a > b ? a : b);
+    double maxY =
+        currentData.map((spot) => spot.y).reduce((a, b) => a > b ? a : b);
+
+    return Column(
+      children: [
+        DropdownButton<String>(
+          value: _selectedTime,
+          items: _chartData.keys.map((String key) {
+            return DropdownMenuItem<String>(
+              value: key,
+              child: Text(key),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedTime = newValue!;
+            });
+          },
         ),
-        SizedBox(
-          width: 60,
-          height: 34,
-          child: TextButton(
-            onPressed: () {
-              setState(() {
-                showAvg = !showAvg;
-              });
-            },
-            child: Text(
-              'avg',
-              style: TextStyle(
-                fontSize: 12,
-                color: showAvg ? Colors.white.withOpacity(0.5) : Colors.white,
+        Stack(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio: 2.0,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: 18,
+                  left: 12,
+                  top: 24,
+                  bottom: 12,
+                ),
+                child: LineChart(
+                  showAvg
+                      ? avgData(maxX, maxY)
+                      : mainData(currentData, maxX, maxY),
+                ),
               ),
             ),
-          ),
+            SizedBox(
+              width: 60,
+              height: 34,
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    showAvg = !showAvg;
+                  });
+                },
+                child: Text(
+                  'avg',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color:
+                        showAvg ? Colors.white.withOpacity(0.5) : Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -110,7 +163,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
-  LineChartData mainData() {
+  LineChartData mainData(List<FlSpot> spots, double maxX, double maxY) {
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -160,20 +213,12 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: 11,
+      maxX: maxX,
       minY: 0,
-      maxY: 6,
+      maxY: maxY,
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
+          spots: spots,
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
@@ -196,7 +241,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     );
   }
 
-  LineChartData avgData() {
+  LineChartData avgData(double maxX, double maxY) {
     return LineChartData(
       lineTouchData: LineTouchData(enabled: false),
       gridData: FlGridData(
@@ -247,9 +292,9 @@ class _LineChartWidgetState extends State<LineChartWidget> {
         border: Border.all(color: const Color(0xff37434d)),
       ),
       minX: 0,
-      maxX: 11,
+      maxX: maxX,
       minY: 0,
-      maxY: 6,
+      maxY: maxY,
       lineBarsData: [
         LineChartBarData(
           spots: const [
