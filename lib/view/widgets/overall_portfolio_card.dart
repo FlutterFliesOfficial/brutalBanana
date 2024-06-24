@@ -36,7 +36,7 @@ class _OverallPortfolioCardState extends State<OverallPortfolioCard> {
   }
 
   void _startRandomValueUpdate() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       setState(() {
         _randomValue = Random().nextDouble() * 100;
         _isAlert = _randomValue < 20; // Check if value goes below 20
@@ -78,7 +78,7 @@ class _OverallPortfolioCardState extends State<OverallPortfolioCard> {
           Row(
             children: [
               const Text(
-                'Equipment Health Overview',
+                'Equipment 23 Health Overview',
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.w600,

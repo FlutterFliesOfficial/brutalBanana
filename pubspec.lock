@@ -277,10 +277,10 @@ packages:
     dependency: "direct main"
     description:
       name: fl_chart
-      sha256: "48a1b69be9544e2b03d9a8e843affd89e43f3194c9248776222efcb4206bb1ec"
+      sha256: d0f0d49112f2f4b192481c16d05b6418bd7820e021e265a3c22db98acf7ed7fb
       url: "https://pub.dev"
     source: hosted
-    version: "0.62.0"
+    version: "0.68.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -294,6 +294,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  flutter_popup_card:
+    dependency: "direct main"
+    description:
+      name: flutter_popup_card
+      sha256: "0f3ad7963e7c38e0d97b430901220f0729a251945b83ddeb77b303ea53c7deff"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -377,7 +385,7 @@ packages:
     source: hosted
     version: "4.0.2"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
@@ -568,6 +576,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
+  popup_card:
+    dependency: "direct main"
+    description:
+      name: popup_card
+      sha256: "515a1a059559358d5184f6961ebebcbd2e9a0f52bcbf77f3279e0bb0b0f66621"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   pub_semver:
     dependency: transitive
     description:

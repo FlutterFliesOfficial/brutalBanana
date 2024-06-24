@@ -36,7 +36,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
 
     snapshot.docs.forEach((doc) {
       double xValue = doc['time'];
-      double yValue = doc['rot'];
+      double yValue = doc['Health'];
 
       FlSpot flSpot = FlSpot(xValue, yValue);
 

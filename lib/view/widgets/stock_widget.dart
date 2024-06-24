@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard_template_dribbble/utils/media_query_values.dart';
 import 'package:dashboard_template_dribbble/view/screens/report_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +11,21 @@ import 'custom_button.dart';
 import 'outline_button.dart';
 
 class EquipmentWidget extends StatelessWidget {
-  const EquipmentWidget({
-    super.key,
-  });
+  const EquipmentWidget({super.key});
+
+  Future<String> _getCurrentHealthStatus() async {
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('dataLog')
+        .orderBy('time', descending: true)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      return querySnapshot.docs.first.data()['Health'].toString();
+    } else {
+      return 'N/A';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,60 +44,59 @@ class EquipmentWidget extends StatelessWidget {
         children: [
           Text(
             'Equipment Health and RUL',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(color: Colors.white),
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.white),
           ),
-          SizedBox(
-            height: context.height * 0.03,
-          ),
-          SizedBox(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(18.0),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                child: Container(
-                  width: context.width * 0.15,
-                  padding: const EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
-                    color: darkGrey.withOpacity(0.1),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Current Health Status',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall!
-                            .copyWith(color: darkGrey),
-                      ),
-                      SizedBox(
-                        height: context.height * 0.012,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '85%',
-                            style: TextStyle(
-                              fontSize: 22.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+          SizedBox(height: context.height * 0.03),
+          FutureBuilder<String>(
+            future: _getCurrentHealthStatus(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return SizedBox(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18.0),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                      child: Container(
+                        width: context.width * 0.15,
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: darkGrey.withOpacity(0.1),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Current Health Status',
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: darkGrey),
                             ),
-                          ),
-                        ],
+                            SizedBox(height: context.height * 0.012),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  snapshot.data ?? 'N/A',
+                                  style: TextStyle(
+                                    fontSize: 22.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
+                );
+              }
+            },
           ),
-          SizedBox(
-            height: context.height * 0.02,
-          ),
+          SizedBox(height: context.height * 0.02),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -95,9 +107,7 @@ class EquipmentWidget extends StatelessWidget {
                   fontSize: 12.0,
                 ),
               ),
-              SizedBox(
-                width: context.width * 0.007,
-              ),
+              SizedBox(width: context.width * 0.007),
               const Icon(
                 Icons.arrow_outward_outlined,
                 color: secondPrimaryColor,
@@ -105,9 +115,7 @@ class EquipmentWidget extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(
-            height: context.height * 0.02,
-          ),
+          SizedBox(height: context.height * 0.02),
           Stack(
             alignment: Alignment.center,
             children: [
@@ -126,14 +134,14 @@ class EquipmentWidget extends StatelessWidget {
                     ),
                     pointers: <GaugePointer>[
                       RangePointer(
-                        value: 120,
+                        value: 70,
                         cornerStyle: CornerStyle.bothCurve,
                         width: 0.2,
                         sizeUnit: GaugeSizeUnit.factor,
                         color: secondPrimaryColor,
                       ),
                       NeedlePointer(
-                        value: 120,
+                        value: 70,
                         needleColor: primaryColor,
                         needleEndWidth: 5,
                         knobStyle: KnobStyle(
@@ -150,14 +158,9 @@ class EquipmentWidget extends StatelessWidget {
                           children: [
                             Text(
                               'Remaining Useful Life',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(color: darkGrey),
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: darkGrey),
                             ),
-                            SizedBox(
-                              height: context.height * 0.02,
-                            ),
+                            SizedBox(height: context.height * 0.02),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -170,22 +173,14 @@ class EquipmentWidget extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(
-                                  width: context.width * 0.001,
-                                ),
+                                SizedBox(width: context.width * 0.001),
                                 Text(
-                                  'days',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                          color: darkGrey, fontSize: 15.0),
+                                  'Cycles',
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: darkGrey, fontSize: 15.0),
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: context.height * 0.02,
-                            ),
+                            SizedBox(height: context.height * 0.02),
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -194,15 +189,10 @@ class EquipmentWidget extends StatelessWidget {
                                   backgroundColor: blue,
                                   radius: 3.0,
                                 ),
-                                SizedBox(
-                                  width: context.width * 0.004,
-                                ),
+                                SizedBox(width: context.width * 0.004),
                                 Text(
                                   'Optimal Performance',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(color: darkGrey),
+                                  style: Theme.of(context).textTheme.bodySmall!.copyWith(color: darkGrey),
                                 ),
                               ],
                             ),
@@ -216,9 +206,7 @@ class EquipmentWidget extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(
-            height: context.height * 0.02,
-          ),
+          SizedBox(height: context.height * 0.02),
           CustomOutlineButton(
             width: context.width * 0.15,
             title: 'Schedule Maintenance',
@@ -226,9 +214,7 @@ class EquipmentWidget extends StatelessWidget {
               // Navigate to maintenance scheduling page
             },
           ),
-          SizedBox(
-            height: context.height * 0.02,
-          ),
+          SizedBox(height: context.height * 0.02),
           CustomButton(
             width: context.width * 0.15,
             title: 'View Detailed Report',
@@ -248,8 +234,7 @@ class EquipmentWidget extends StatelessWidget {
     );
   }
 
-  Padding infoWidget(BuildContext context, String title, String value,
-      {bool isPercentage = false}) {
+  Padding infoWidget(BuildContext context, String title, String value, {bool isPercentage = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: SizedBox(
@@ -259,10 +244,7 @@ class EquipmentWidget extends StatelessWidget {
           children: [
             Text(
               title,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(color: darkGrey),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(color: darkGrey),
             ),
             Text(
               value,

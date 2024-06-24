@@ -184,6 +184,7 @@ class _SideBarState extends State<SideBar> {
         );
         break;
       case 'add':
+      
         // Navigator.push to AddPage
         break;
       case 'logout':
