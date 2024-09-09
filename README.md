@@ -1,4 +1,4 @@
-![App Logo]()
+![App Screenshot](Screenshot 2024-09-08 204451.png)
 
 # SystemSync - Predictive Maintenance App
 
