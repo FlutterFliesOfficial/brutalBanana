@@ -1,3 +1,5 @@
+![App Logo]()
+
 # SystemSync - Predictive Maintenance App
 
 **SystemSync** is a predictive maintenance app designed to forecast machine failures and predict the Remaining Useful Life (RUL) of equipment. The app uses advanced machine learning algorithms and real-time data collection to improve reliability, efficiency, and equipment lifespan.
