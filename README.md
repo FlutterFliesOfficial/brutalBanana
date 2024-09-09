@@ -36,16 +36,7 @@
 1. Install Python dependencies:
    ```bash
    pip install -r requirements.txt
-2.Run database migrations:
-    python manage.py migrate
-3.Start the Django development server:
-      python manage.py runserver
 
-##Set up the Flutter frontend:
-1.Install Flutter dependencies:
-    flutter pub get
-2.Run the app:
-    flutter run
 
 
 
